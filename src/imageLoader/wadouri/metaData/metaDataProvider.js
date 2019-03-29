@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import external from '../../../externalModules.js';
 import getNumberValues from './getNumberValues.js';
 import parseImageId from '../parseImageId.js';
@@ -39,7 +40,7 @@ function metaDataProvider (type, imageId) {
 
     const imageOrientationPatient = getNumberValues(dataSet, 'x00200037', 6);
     const imagePositionPatient = getNumberValues(dataSet, 'x00200032', 3);
-    const pixelSpacing = getNumberValues(dataSet, 'x00280030', 2);
+    const pixelSpacing = getNumberValues(dataSet, 'x00280030', 2) || getNumberValues(dataSet, 'x00181164', 2);
     let columnPixelSpacing = null;
     let rowPixelSpacing = null;
 
@@ -87,12 +88,31 @@ function metaDataProvider (type, imageId) {
 
   if (type === 'voiLutModule') {
     const modalityLUTOutputPixelRepresentation = getModalityLUTOutputPixelRepresentation(dataSet);
+    const arrWWWC = [];
+
+    const WC = dataSet.string('x00281050');
+    const WW = dataSet.string('x00281051');
+
+    if (WC && WW) {
+      const arrWC = WC.split('\\');
+      const arrWW = WW.split('\\');
+
+      if (arrWC.length > 0 && arrWW.length > 0 && arrWC.length === arrWW.length) {
+        for (let i = 0; i < arrWC.length; i++) {
+          arrWWWC.push({
+            windowCenter: parseFloat(arrWC[i]),
+            windowWidth: parseFloat(arrWW[i])
+          });
+        }
+      }
+    }
 
 
     return {
       windowCenter: getNumberValues(dataSet, 'x00281050', 1),
       windowWidth: getNumberValues(dataSet, 'x00281051', 1),
-      voiLUTSequence: getLUTs(modalityLUTOutputPixelRepresentation, dataSet.elements.x00283010)
+      voiLUTSequence: getLUTs(modalityLUTOutputPixelRepresentation, dataSet.elements.x00283010),
+      windowLevelArray: arrWWWC
     };
   }
 

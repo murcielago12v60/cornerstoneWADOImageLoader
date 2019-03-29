@@ -124,6 +124,7 @@ function createImage (imageId, pixelData, transferSyntax, options) {
         width: imageFrame.columns,
         windowCenter: voiLutModule.windowCenter ? voiLutModule.windowCenter[0] : undefined,
         windowWidth: voiLutModule.windowWidth ? voiLutModule.windowWidth[0] : undefined,
+        windowLevels: voiLutModule.windowLevelArray,
         decodeTimeInMS: imageFrame.decodeTimeInMS,
         floatPixelData: undefined
       };
