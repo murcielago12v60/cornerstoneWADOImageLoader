@@ -13,7 +13,9 @@ import getMinMax from './getMinMax.js';
  */
 export default function calculateMinMax (imageFrame, strict = true) {
   const minMax = getMinMax(imageFrame.pixelData);
-  const mustAssign = !(isNumber(imageFrame.smallestPixelValue) && isNumber(imageFrame.largestPixelValue));
+  const mustAssign = !(isNumber(imageFrame.smallestPixelValue) && isNumber(imageFrame.largestPixelValue) 
+                      && (imageFrame.smallestPixelValue !== imageFrame.largestPixelValue));
+
 
 
   if (strict === true && !mustAssign) {
